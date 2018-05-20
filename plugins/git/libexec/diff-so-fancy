@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-
-[[ $# -ge 1 ]] && [[ -f "$1" ]] && input="$1" || input="-"
-
-cat $input | diff-highlight | diff-so-fancy.pl

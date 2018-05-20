@@ -3,6 +3,7 @@
 if dot::os::mac; then
   formula git
   formula tig
+  formula diff-so-fancy
 fi
 
 dot::symlink "$XDG_CONFIG_HOME/git/config" "$DOT_PLUGIN_DIR/etc/gitconfig"
