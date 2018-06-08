@@ -9,16 +9,16 @@ if [ -z "$installer" ]; then
   exit 1
 fi
 
-echo "Verifying integrity of installer..."
-if ! codesign -dvv "$installer"; then
-  echo "Unable to verify installer!"
-  exit 1
-fi
-
 install_volume=$2
 if [ -z "$install_volume" ]; then
   echo "Second argument must be path to the volume you want to image"
   echo "(e.g. \"/Volumes/MyUSBDrive\")"
+  exit 1
+fi
+
+echo "Verifying integrity of installer..."
+if ! codesign -dvv "$installer"; then
+  echo "Unable to verify installer!"
   exit 1
 fi
 
