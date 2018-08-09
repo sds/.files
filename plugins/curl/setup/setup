@@ -3,7 +3,7 @@
 if dot::os::mac; then
   # libssh2: scp/sftp support
   # nghttp2: HTTP/2 support
-  formula curl --with-libssh2 --with-nghttp2
+  formula curl --with-libssh2 --with-nghttp2 --with-c-ares
 
   # You'll still need to remember to explicitly specify includes/headers if you
   # want to compile against the newer curl version instead of the system one
