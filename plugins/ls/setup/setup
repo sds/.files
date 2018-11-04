@@ -2,4 +2,5 @@
 
 if dot::os::mac; then
   formula coreutils
+  formula exa
 fi
