@@ -1,9 +1,14 @@
 #!/usr/bin/env sh
 
-dot::symlink "$HOME/.irbrc" "$DOT_PLUGIN_DIR/etc/irbrc"
-dot::symlink "$HOME/.pryrc" "$DOT_PLUGIN_DIR/etc/pryrc"
-
 if dot::os::mac; then
   formula rbenv
   formula ruby-build
+
+  # Additional rbenv plugins
+  formula rbenv-ctags         # Generate tags for Ruby stdlib on install
+  formula rbenv-default-gems  # Define gems to install automatically on Ruby install
 fi
+
+dot::symlink "$HOME/.irbrc" "$DOT_PLUGIN_DIR/etc/irbrc"
+dot::symlink "$HOME/.pryrc" "$DOT_PLUGIN_DIR/etc/pryrc"
+dot::symlink "$HOME/.rbenv/default-gems" "$DOT_PLUGIN_DIR/etc/default-gems"
