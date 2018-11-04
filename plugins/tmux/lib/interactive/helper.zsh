@@ -1,5 +1,3 @@
-alias t=tmux
-
 tmux () {
   # Symlink auth socket so that when we reconnect we can point to the newer
   # socket by just updating the symlink. Saves us from having to manually reset
