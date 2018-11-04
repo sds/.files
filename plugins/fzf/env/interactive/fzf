@@ -1,1 +1,1 @@
-export FZF_DEFAULT_COMMAND='(rg --files --hidden --follow --glob "!.git/*")'
+export FZF_DEFAULT_COMMAND="fd --hidden --no-ignore --exclude .git --type file"
