@@ -3,3 +3,4 @@
 formula ranger
 
 dot::symlink "$XDG_CONFIG_HOME/ranger/rc.conf" "$DOT_PLUGIN_DIR/etc/rc.conf"
+dot::symlink "$XDG_CONFIG_HOME/ranger/commands.py" "$DOT_PLUGIN_DIR/etc/commands.py"
