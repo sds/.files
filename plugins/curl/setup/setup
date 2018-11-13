@@ -5,9 +5,10 @@ if dot::os::mac; then
   # nghttp2: HTTP/2 support
   formula curl --with-libssh2 --with-nghttp2 --with-c-ares
 
+  # We don't use `brew link --force curl` as Homebrew explicitly forbids
+  # linking macOS-provided software.
+  #
   # You'll still need to remember to explicitly specify includes/headers if you
   # want to compile against the newer curl version instead of the system one
-  if dot::installing; then
-    brew link --force curl
-  fi
+  dot::symlink "$(brew --prefix)/bin/curl" "$(brew --prefix curl)/bin/curl"
 fi
