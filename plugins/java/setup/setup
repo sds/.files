@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+if dot::os::mac; then
+  cask java
+  formula jenv
+fi
+
