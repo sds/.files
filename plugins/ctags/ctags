@@ -1,2 +1,7 @@
+--recurse=yes
+--tag-relative=yes
 --sort=yes
 --python-kinds=-i
+--exclude=.git
+--exclude=node_modules/*
+--exclude=log/*
