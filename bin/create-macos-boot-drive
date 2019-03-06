@@ -23,5 +23,4 @@ if ! codesign -dvv "$installer"; then
 fi
 
 sudo "$installer/Contents/Resources/createinstallmedia" \
-  --volume "$install_volume" \
-  --applicationpath "$installer"
+  --volume "$install_volume"
