@@ -1,9 +1,7 @@
 #!/usr/bin/env sh
 
 if dot::os::mac; then
-  # libssh2: scp/sftp support
-  # nghttp2: HTTP/2 support
-  formula curl --with-libssh2 --with-nghttp2 --with-c-ares
+  formula curl
 
   # We don't use `brew link --force curl` as Homebrew explicitly forbids
   # linking macOS-provided software.
