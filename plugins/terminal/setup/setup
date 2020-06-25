@@ -6,7 +6,7 @@ if [ "$DOT_SHELL" = zsh ]; then
   dot::repo "git://github.com/zsh-users/zsh-history-substring-search.git"
 fi
 
-if dot::installing; then
+if dot::installing && dot::os::mac; then
   # Enable secure keyboard entry for Terminal.app
   defaults write com.apple.Terminal SecureKeyboardEntry 1
 fi
