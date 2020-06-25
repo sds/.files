@@ -1,5 +1,3 @@
 #!/usr/bin/env sh
 
-if dot::os::mac; then
-  formula fzf
-fi
+formula fzf
