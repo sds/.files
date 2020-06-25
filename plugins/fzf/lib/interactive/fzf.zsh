@@ -6,8 +6,13 @@ setopt vi
 
 # TODO: Come up with a fast alternative to get location dynamically
 # (`brew --prefix fzf` takes too long, so we hardcode this for now)
-source /usr/local/opt/fzf/shell/completion.zsh
-source /usr/local/opt/fzf/shell/key-bindings.zsh
+if dot::os::mac; then
+  source /usr/local/opt/fzf/shell/completion.zsh
+  source /usr/local/opt/fzf/shell/key-bindings.zsh
+elif dot::os::linux; then
+  source /home/linuxbrew/.linuxbrew/opt/fzf/shell/completion.zsh
+  source /home/linuxbrew/.linuxbrew/opt/fzf/shell/key-bindings.zsh
+fi
 
 # Use fd (https://github.com/sharkdp/fd) instead of the default find
 # command for listing path candidates.

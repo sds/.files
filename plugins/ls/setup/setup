@@ -1,6 +1,4 @@
 #!/usr/bin/env sh
 
-if dot::os::mac; then
-  formula coreutils
-  formula exa
-fi
+formula coreutils
+formula exa
