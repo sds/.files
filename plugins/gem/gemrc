@@ -1,2 +1,5 @@
 # Skip installation of documentation
 gem: --no-document
+
+:sources:
+- https://rubygems.org
