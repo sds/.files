@@ -1,5 +1,5 @@
 # Highlight matches if output to shell
-export GREP_OPTIONS="--color=auto"
+alias grep="grep --color=auto"
 
 # Better match highlight color
 export GREP_COLOR="0;30;43"
