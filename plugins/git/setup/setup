@@ -1,10 +1,8 @@
 #!/usr/bin/env sh
 
-if dot::os::mac; then
-  formula git
-  formula tig
-  formula diff-so-fancy
-fi
+formula git
+formula tig
+formula diff-so-fancy
 
 dot::symlink "$XDG_CONFIG_HOME/git/config" "$DOT_PLUGIN_DIR/etc/gitconfig"
 dot::symlink "$XDG_CONFIG_HOME/git/ignore" "$DOT_PLUGIN_DIR/etc/gitignore"
