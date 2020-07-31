@@ -3,7 +3,7 @@
 cask iterm2
 
 # Install Source Code Pro font so we can use it in iTerm
-tap caskroom/fonts
+tap homebrew/cask-fonts
 cask font-source-code-pro
 
 iterm_prefs_dir="$XDG_CONFIG_HOME/iterm"
