@@ -4,15 +4,8 @@
 # https://github.com/junegunn/fzf/wiki/Configuring-fuzzy-completion#caveats
 setopt vi
 
-# TODO: Come up with a fast alternative to get location dynamically
-# (`brew --prefix fzf` takes too long, so we hardcode this for now)
-if dot::os::mac; then
-  source /usr/local/opt/fzf/shell/completion.zsh
-  source /usr/local/opt/fzf/shell/key-bindings.zsh
-elif dot::os::linux; then
-  source /home/linuxbrew/.linuxbrew/opt/fzf/shell/completion.zsh
-  source /home/linuxbrew/.linuxbrew/opt/fzf/shell/key-bindings.zsh
-fi
+source "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh"
+source "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
 
 # Use fd (https://github.com/sharkdp/fd) instead of the default find
 # command for listing path candidates.
