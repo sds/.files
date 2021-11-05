@@ -1,4 +1,0 @@
-#!/usr/bin/env sh
-
-cask slate
-dot::symlink "$HOME/.slate" "$DOT_PLUGIN_DIR/etc/slate"
