@@ -2,5 +2,5 @@
 
 if dot::os::mac; then
   formula gpg
-  cask gpgtools
+  cask gpg-suite
 fi
