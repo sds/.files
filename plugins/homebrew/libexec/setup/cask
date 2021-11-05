@@ -2,20 +2,20 @@
 
 cask_installed() {
   cask="$1"
-  ! brew cask info "$cask" | grep "Not installed" >/dev/null 2>&1
+  ! brew info --cask "$cask" >/dev/null 2>&1
 }
 
 install_cask() {
   cask="$1"
   if ! cask_installed "$cask"; then
-    brew cask install "$cask"
+    brew install --cask "$cask"
   fi
 }
 
 uninstall_cask() {
   cask="$1"
   if cask_installed "$cask"; then
-    brew cask uninstall "$cask"
+    brew uninstall --cask "$cask"
   fi
 }
 
