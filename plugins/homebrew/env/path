@@ -1,8 +1,0 @@
-# Homebrew installs some utilities in /usr/local/sbin but this is not in the
-# default path. Add it.
-if dot::os::mac; then
-  export PATH="/usr/local/sbin:$PATH"
-elif dot::os::linux; then
-  # TODO: `brew --prefix` is slow. Figure out how to not hardcode this.
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
