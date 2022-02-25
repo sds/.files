@@ -4,8 +4,8 @@
 # https://github.com/junegunn/fzf/wiki/Configuring-fuzzy-completion#caveats
 setopt vi
 
-source "$HOMEBREW_PREFIX/opt/fzf/shell/completion.zsh"
-source "$HOMEBREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
+source "/opt/homebrew/opt/fzf/shell/completion.zsh"
+source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
 
 # Use fd (https://github.com/sharkdp/fd) instead of the default find
 # command for listing path candidates.
