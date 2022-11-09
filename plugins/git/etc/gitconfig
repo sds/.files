@@ -3,8 +3,10 @@
                      git config --get user.email'
   authors  = shortlog -sne --no-merges
   br       = branch -v -v
+  brd      = branch -D
   c        = commit -v
   co       = checkout
+  com      = "!f() { git checkout main 2>/dev/null || git checkout master; }; f"
   cp       = cherry-pick
   d        = diff
   s        = sync
@@ -13,7 +15,8 @@
   lg       = log --oneline --graph --decorate
   p        = add --patch
   pl       = pull
-  pr       = "!f() { git fetch origin pull/$1/head:pr/$1 && git checkout pr/$1 && git track master; }; f"
+  pof      = push origin -f
+  pr       = "!f() { git fetch origin pull/$1/head:pr/$1 && git checkout pr/$1 && (git track main || git track master); }; f"
   praise   = blame
   rb       = rebase
   rba      = rebase --abort
