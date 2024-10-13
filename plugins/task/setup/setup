@@ -1,7 +1,0 @@
-#!/usr/bin/env sh
-
-if dot::os::mac; then
-  dot::symlink "$HOME/.taskrc" "$DOT_PLUGIN_DIR/etc/taskrc"
-  formula task
-fi
-
