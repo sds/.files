@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# Displays tracking branch of a specified branch, defaulting to current branch
+
+if [ -n "$1" ]; then
+  local_branch="$1"
+else
+  local_branch=`git symbolic-ref -q HEAD | sed 's/^refs\/heads\///'`
+fi
+
+remote_branch=`git config branch.${local_branch}.merge | sed 's/^refs\/heads\///'`
+remote=`git config branch.${local_branch}.remote`
+
+if [ "$remote" == "." ]; then
+  echo ${remote_branch}
+else
+  echo ${remote}/${remote_branch}
+fi

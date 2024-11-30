@@ -1,0 +1,11 @@
+[terminal]
+# Define this explicitly since on first boot SHELL is still set to zsh even after updating:wq
+shell = "/opt/homebrew/bin/fish"
+
+[font]
+size = 20
+normal = { family = "InconsolataGo Nerd Font"}
+
+[window]
+startup_mode = "SimpleFullscreen"
+option_as_alt = "OnlyLeft"

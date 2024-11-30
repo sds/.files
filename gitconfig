@@ -1,0 +1,115 @@
+[alias]
+  author   = !sh -c 'git config --get user.name && \
+                     git config --get user.email'
+  authors  = shortlog -sne --no-merges
+  br       = branch -v -v
+  brd      = branch -D
+  c        = commit -v
+  co       = checkout
+  com      = "!f() { git checkout main 2>/dev/null || git checkout master; }; f"
+  cp       = cherry-pick
+  d        = diff
+  s        = sync
+  hash     = !sh -c 'git rev-parse ${1-HEAD}' -
+  hr       = reset --hard
+  lg       = log --oneline --graph --decorate
+  p        = add --patch
+  pl       = pull
+  pof      = push origin -f
+  pr       = "!f() { git fetch origin pull/$1/head:pr/$1 && git checkout pr/$1 && (git track main || git track master); }; f"
+  praise   = blame
+  rb       = rebase
+  rba      = rebase --abort
+  rbc      = rebase --continue
+  rbi      = rebase --interactive
+  sm       = submodule
+  smu      = submodule update --init
+  st       = status -sb
+  staged   = diff --cached
+  track    = branch --set-upstream-to # [upstream]
+  unstage  = reset HEAD # [files...]
+  unstash  = stash pop
+  unwip    = reset HEAD~
+  wip      = commit -m WIP --no-verify --no-gpg-sign
+  wt       = worktree
+[apply]
+  whitespace = warn
+[branch]
+  autosetupmerge  = always
+  autosetuprebase = always
+[color]
+  ui = auto
+[color "branch"]
+  current      = green bold
+  local        = bold
+  plain        = normal
+  remote       = cyan bold
+[color "decorate"]
+  branch       = white bold
+  remoteBranch = cyan bold
+  tag          = red
+  stash        = magenta
+  HEAD         = green
+[color "diff"]
+  commit       = yellow bold
+  frag         = cyan
+  func         = bold cyan
+  meta         = bold
+  new          = green bold
+  plain        = normal
+  old          = red bold
+  untracked    = bold
+  whitespace   = yellow reverse
+[color "diff-highlight"]
+  oldNormal    = "red bold"
+  oldHighlight = "red bold 52"
+  newNormal    = "green bold"
+  newHighlight = "green bold 22"
+[color "grep"]
+  context      = normal
+  filename     = green bold
+  function     = cyan bold
+  linenumber   = yellow bold
+  match        = yellow reverse
+  selected     = normal
+  separator    = normal
+[color "interactive"]
+  error        = red bold
+  header       = cyan
+  help         = yellow bold
+  prompt       = magenta bold
+[color "status"]
+  header       = cyan
+  added        = green bold
+  branch       = green bold
+  changed      = red bold
+  nobranch     = red bold
+  untracked    = normal
+[core]
+  abbrev       = 8
+  autocrlf     = input
+  excludesfile = ~/.config/git/ignore
+[grep]
+  extendedRegexp = true
+  lineNumber     = true
+[help]
+  autocorrect = 1
+[merge]
+  log = 100
+[pager]
+  color = true
+  diff = diff-so-fancy | less -MRX --pattern '^(Date|added|deleted|modified): '
+[push]
+  default = current
+[rebase]
+  autosquash = true
+  stat       = true
+[rerere]
+  enabled = 1
+[include]
+  path = ~/.config/git/config.local
+[filter "lfs"]
+  process = git-lfs filter-process
+  required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f

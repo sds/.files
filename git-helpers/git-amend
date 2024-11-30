@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+
+# Amend an arbitrary revision with changes in the index.
+# This allows you to make changes to a commit that isn't HEAD.
+
+cur_revision=`git rev-parse HEAD`
+revision_to_fix=`git rev-parse ${1-$cur_revision}`
+
+if [ "${revision_to_fix}" = "${cur_revision}" ]; then
+  # Fixing up the previous commit can be easily done with `--amend`
+  git commit --amend --verbose
+else
+  # Otherwise we need to do a rebase
+  if ! git diff-index --cached --quiet HEAD; then
+    # Only commit if there are changes in the index
+    git commit --fixup ${revision_to_fix} || exit 1
+  fi
+
+  # Not sure why, but sometimes `git diff-index` returns a non-zero exit status
+  # even when there are no changes unless you execute `git status` first.
+  # Execute it to avoid this problem.
+  git status 2>&1 > /dev/null
+
+  # Stash if necessary so we can rebase
+  if ! git diff-index --quiet HEAD; then
+    git stash && stashed=1
+  fi
+
+  git rebase --interactive ${revision_to_fix}~1
+
+  if [ -n "${stashed}" ]; then
+    git stash pop
+  fi
+fi

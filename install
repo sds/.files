@@ -1,0 +1,225 @@
+#!/usr/bin/env bash
+
+# Ensure Homebrew is installed
+if ! which brew >/dev/null 2>&1; then
+  echo "🏗️ Homebrew not installed. Installing..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # Re-exec with Homebrew in the PATH.
+  # Ensures we can install everything else we need (which will also set up the PATH correctly in future)
+  export PATH="/opt/homebrew/bin:$PATH"
+  exec "$0"
+fi
+
+# Ensure fish is installed (since this might be run on a new system)
+if ! which fish >/dev/null 2>&1; then
+  echo "🏗️ Fish shell not installed. Installing..."
+  brew install fish
+
+  fish_shell_location="$(brew --prefix)/bin/fish"
+  # Add fish to the list of allowed login shells if it isn't already
+  if ! grep "$fish_shell_location" /etc/shells >/dev/null 2>&1; then
+    echo "🏗️ Fish shell not configured as an allowed login shell. Adding..."
+    sudo tee -a /etc/shells >/dev/null
+  else
+    echo "✅ Fish shell already configured as allowed login shell."
+  fi
+
+  # Set up fish shell as default shell
+  if ! dscl . -read ~/ UserShell | sed 's/UserShell: //' | grep "$fish_shell_location" >/dev/null 2>&1; then
+    echo "🏗️ Fish shell not configured as default shell. Updating..."
+    chsh -s "$fish_shell_location"
+    launchctl setenv SHELL "$fish_shell_location" # Ensure new GUI app windows pick up the new shell
+  else
+    echo "✅ Fish shell already configured as default shell."
+  fi
+fi
+
+# Re-exec as the fish shell, passing the name of the original file as the first argument
+# Filter out the bash-specific prefix code before invoking fish shell
+exec fish <(sed -n '/^#!\/usr\/bin\/env fish$/,$p' "$0") "$0"
+
+###################################################################################################
+#!/usr/bin/env fish
+
+# We assume the path of the original script file is passed as the first argument (see above)
+set script_dir (realpath (dirname (echo $argv[1])))
+
+function symlink -a target_file source_file
+  mkdir -p (dirname "$target_file")
+
+  if test -e "$target_file"
+    if test (readlink "$target_file") = "$source_file"
+      echo "✅ Symlink $source_file →  $target_file already exists."
+      return
+    end
+  end
+
+  echo "🏗️ Symlinking $source_file to $target_file"
+  ln -sf "$source_file" "$target_file"
+end
+
+function formula_installed
+  set formula $argv[1]
+  brew list --formula $formula >/dev/null 2>&1
+end
+
+function formula
+  set formula $argv[1]
+  set flags $argv[2..-1]
+
+  if formula_installed $formula
+    echo "✅ Formula $formula already installed."
+  else
+    echo "🏗️ Formula $formula not installed. Installing..."
+    brew install $formula $flags
+  end
+end
+
+function cask_installed
+  set cask $argv[1]
+  brew list --cask $cask >/dev/null 2>&1
+end
+
+function cask
+  set cask $argv[1]
+
+  if cask_installed $cask
+    echo "✅ Cask $cask already installed."
+  else
+    echo "🏗️ Cask $cask not installed. Installing..."
+    brew install --cask $cask
+  end
+end
+
+function fish_plugin_installed
+  set fish_plugin $argv[1]
+  fisher list "^$fish_plugin\$" >/dev/null 2>&1
+end
+
+function fish_plugin
+  set fish_plugin $argv[1]
+
+  if fish_plugin_installed $fish_plugin
+    echo "✅ Fish plugin $fish_plugin already installed."
+  else
+    echo "🏗️ Fish plugin $fish_plugin not installed. Installing..."
+    fisher install $fish_plugin
+  end
+end
+
+###################################################################################################
+# Installation steps below
+###################################################################################################
+
+echo "🏎️ Installing..."
+
+if ! type fisher >/dev/null 2>&1
+  echo "🏗️ Installing fisher plugin manager for fish shell..."
+  curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+else
+  echo "✅ Fish shell plugin manager already installed."
+end
+
+fish_plugin ilancosman/tide@v6 # Prompt manager
+fish_plugin jorgebucaran/autopair.fish # Auto-add closing parentheses/quotes/etc while typing in shell
+
+mkdir -p "$HOME/.cache" "$HOME/.config" "$HOME/.local/share"
+
+symlink "$HOME/.hushlogin" "$script_dir/hushlogin"
+
+cask alacritty
+cask font-inconsolata-go-nerd-font
+symlink "$HOME/.config/alacritty/alacritty.toml" "$script_dir/alacritty.toml"
+
+formula asdf
+fish_plugin dteoh/fish-homebrew-asdf # asdf integration
+
+formula bat
+formula coreutils # GNU versions of commands like ls, rm, mv etc.
+formula curl
+
+formula fd # Faster file search
+formula fzf # Fuzzy file search
+fish_plugin patrickf1/fzf.fish
+
+formula ripgrep
+
+formula git
+formula diff-so-fancy
+symlink "$HOME/.config/git/config" "$script_dir/gitconfig"
+symlink "$HOME/.config/git/ignore" "$script_dir/gitignore"
+
+formula gpg
+formula pinentry
+formula openssl
+formula openssh
+symlink "$HOME/.gnupg/gpg-agent.conf" "$script_dir/gpg-agent.conf"
+chmod 700 ~/.gnupg --changes # Fix permissions and output only if there was a change
+
+# If GPG isn't configured, this is a new machine.
+if ! gpg --list-keys | grep ultimate >/dev/null 2>&1
+  echo "🏗️ No PGP/SSH key. Creating one..."
+  gpg --full-generate-key
+  set primary_key (gpg --list-secret-keys --with-subkey-fingerprints | sed -n '/^[[:space:]]*[0-9A-Fa-f]\{40\}$/ {s/^[[:space:]]*//;p;q;}')
+
+  # Create SSH key
+  gpg --quick-add-key $primary_key ed25519 auth
+
+  # Configure GPG agent to use this SSH key for auth
+  gpg --list-secret-keys --with-keygrip $primary_key | sed -n '/\[A\]/,/Keygrip/p' | awk '/Keygrip/ {print $3}' > ~/.gnupg/sshcontrol
+
+  # Create commit signing key
+  gpg --quick-add-key $primary_key ed25519 sign
+
+  # Configure Git to use signing key
+  set signing_key (gpg --list-keys --with-subkey-fingerprints $primary_key | sed -n '/\[S\]/,+1p' | awk '/^[[:space:]]+[0-9A-F]{40}/ {print $1}')
+  set local_git_config "\
+[user]
+  name = Shane da Silva
+  email = shane@dasilva.io
+  signingkey = $signing_key
+[commit]
+  gpgsign = true
+[tag]
+  gpgsign = true
+  "
+
+  echo -e "$local_git_config" > "$HOME/.config/git/config.local"
+
+  echo "✅ PGP & SSH keys configured. Add them to your GitHub profile:"
+  ssh-add -L
+  echo "👉 https://github.com/settings/ssh/new"
+  gpg --export --armor $primary_key
+  echo "👉 https://github.com/settings/gpg/new"
+end
+
+formula htop
+formula iftop
+formula pstree
+formula tree
+
+formula nvim
+symlink "$HOME/.config/nvim" "$script_dir/nvim"
+
+formula tmux
+symlink "$HOME/.config/tmux/tmux.conf" "$script_dir/tmux.conf"
+
+cask 1password
+cask bartender
+cask cleanshot
+cask cloudflare-warp
+cask google-chrome
+cask istat-menus
+cask standard-notes
+
+# Install our fish configuration last since it references plugins we installed above
+symlink "$HOME/.config/fish/config.fish" "$script_dir/config.fish"
+symlink "$HOME/.config/fish/local.fish" "$script_dir/local.fish"
+
+echo "🏁 Installation complete!"
+
+# Warn user that since they originall ran this using a non-fish shell, they need to start up shell
+if ! string match -r 'fish$' "$SHELL" >/dev/null
+  echo
+  echo "👉 Since you ran this command using a non-fish shell ($SHELL), remember to start a new shell"
+end
