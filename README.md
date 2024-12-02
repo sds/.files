@@ -14,14 +14,10 @@ The goal with this was simplification:
 
 ## Installation
 
-Ensure you already have Homebrew + Fish already installed as your default shell.
-
-Clone this repository and run the install script.
+Assuming you're on a brand-new machine, run:
 
 ```
-git clone git@github.com:sds/.files
-cd .files
-./install
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sds/.files/HEAD/bootstrap.sh)"
 ```
 
 ## Configuration
