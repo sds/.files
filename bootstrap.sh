@@ -4,6 +4,9 @@
 #
 #   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/sds/.files/HEAD/bootstrap.sh)"
 
+# Halt on first failed command
+set -e
+
 # Install Homebrew (which takes care of Xcode CLI tools, including git)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
@@ -16,7 +19,8 @@ git clone https://github.com/sds/.files.git ~/.files
 cd ~/.files
 
 # Switch repo to use SSH going forward (we'll have SSH set up soon)
-git remote update origin git@github.com:sds/.files
+git remote remove origin >/dev/null 2>&1
+git remote add origin git@github.com:sds/.files
 
 # Replace this script with the install script and execute it
 exec ./install

@@ -27,7 +27,7 @@ if ! which fish >/dev/null 2>&1; then
   # Set up fish shell as default shell
   if ! dscl . -read ~/ UserShell | sed 's/UserShell: //' | grep "$fish_shell_location" >/dev/null 2>&1; then
     echo "🏗️ Fish shell not configured as default shell. Updating..."
-    chsh -s "$fish_shell_location"
+    chsh -s "$fish_shell_location" & # Run in background since this spawns a new shell which blocks further execution
     launchctl setenv SHELL "$fish_shell_location" # Ensure new GUI app windows pick up the new shell
   else
     echo "✅ Fish shell already configured as default shell."
