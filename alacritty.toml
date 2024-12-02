@@ -7,5 +7,6 @@ size = 20
 normal = { family = "InconsolataGo Nerd Font"}
 
 [window]
-startup_mode = "SimpleFullscreen"
+startup_mode = "Maximized"
+decorations = "None"
 option_as_alt = "OnlyLeft"
