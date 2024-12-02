@@ -26,7 +26,7 @@ if ! which fish >/dev/null 2>&1; then
   # Add fish to the list of allowed login shells if it isn't already
   if ! grep "$fish_shell_location" /etc/shells >/dev/null 2>&1; then
     echo "🏗️ Fish shell not configured as an allowed login shell. Adding..."
-    sudo tee -a /etc/shells >/dev/null
+    echo "$fish_shell_location" | sudo tee -a /etc/shells >/dev/null
   else
     echo "✅ Fish shell already configured as allowed login shell."
   fi
