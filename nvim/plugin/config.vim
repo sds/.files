@@ -4,6 +4,8 @@
 nnoremap <Space> :Telescope find_files<CR>
 nnoremap <Leader>t :Telescope tags<CR>
 
+nnoremap <Leader>i <Cmd>lua vim.lsp.buf.code_action()<CR>
+
 set scrolloff=999 "Center the cursor vertically by default"
 
 set formatoptions+=j  " Remove comment marker when joining lines
