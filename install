@@ -27,7 +27,7 @@ if ! which fish >/dev/null 2>&1; then
   # Set up fish shell as default shell
   current_default_shell="$(dscl . -read ~/ UserShell | sed 's/UserShell: //')"
   if ! echo "$current_default_shell" | grep "$fish_shell_location" >/dev/null 2>&1; then
-    echo "🏗️ Fish shell not configured as default shell (current is "$current_default_shell). Updating to {$fish_shell_location}..."
+    echo "🏗️ Fish shell not configured as default shell (current is $current_default_shell). Updating to {$fish_shell_location}..."
     sudo dscl localhost -change /Local/Default/Users/$USER UserShell "$current_default_shell" "$fish_shell_location"
     launchctl setenv SHELL "$fish_shell_location" # Ensure new GUI app windows pick up the new shell
   else
