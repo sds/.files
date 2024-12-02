@@ -8,10 +8,11 @@
 set -e
 
 # Map Caps Lock to Left-Ctrl
-hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}'
+hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}' >/dev/null
 
 # Persist mapping across reboots
 # See https://hidutil-generator.netlify.app/
+mkdir -p ~/Library/LaunchAgents
 cat - <<EOF > ~/Library/LaunchAgents/com.local.CapsLockLeftControlRemapping.plist
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
