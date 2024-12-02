@@ -12,6 +12,13 @@ fi
 
 # Ensure fish is installed (since this might be run on a new system)
 if ! which fish >/dev/null 2>&1; then
+  # Before installing fish, add our own tide configuration so that it "just works"
+  # This is a hack but saves a lot of time by not having to run `tide configure`
+  mkdir -p "$HOME/.config/fish"
+  if [ ! -e "$HOME/.config/fish/fish_variables" ]; then
+    grep -v '^#' "$HOME/.files/tide-prompt.fish" > "$HOME/.config/fish/fish_variables"
+  fi
+
   echo "🏗️ Fish shell not installed. Installing..."
   brew install fish
 
