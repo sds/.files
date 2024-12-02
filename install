@@ -32,9 +32,10 @@ if ! which fish >/dev/null 2>&1; then
   fi
 
   # Set up fish shell as default shell
-  if ! dscl . -read ~/ UserShell | sed 's/UserShell: //' | grep "$fish_shell_location" >/dev/null 2>&1; then
-    echo "🏗️ Fish shell not configured as default shell. Updating..."
-    chsh -s "$fish_shell_location" & # Run in background since this spawns a new shell which blocks further execution
+  current_default_shell="$(dscl . -read ~/ UserShell | sed 's/UserShell: //')"
+  if ! echo "$current_default_shell" | grep "$fish_shell_location" >/dev/null 2>&1; then
+    echo "🏗️ Fish shell not configured as default shell (current is "$current_default_shell). Updating to {$fish_shell_location}..."
+    sudo dscl localhost -change /Local/Default/Users/$USER UserShell "$current_default_shell" "$fish_shell_location"
     launchctl setenv SHELL "$fish_shell_location" # Ensure new GUI app windows pick up the new shell
   else
     echo "✅ Fish shell already configured as default shell."
@@ -162,6 +163,13 @@ formula openssl
 formula openssh
 symlink "$HOME/.gnupg/gpg-agent.conf" "$script_dir/gpg-agent.conf"
 chmod 700 ~/.gnupg --changes # Fix permissions and output only if there was a change
+
+# Start GPG agent if it isn't already running (saves us entering password multiple times during install)
+if not pgrep gpg-agent >/dev/null
+  echo "🏗️ Starting GPG agent..."
+  gpgconf --launch gpg-agent
+  set -x SSH_AUTH_SOCK "$(gpgconf --list-dirs agent-ssh-socket)"
+end
 
 # If GPG isn't configured, this is a new machine.
 if ! gpg --list-keys | grep ultimate >/dev/null 2>&1
