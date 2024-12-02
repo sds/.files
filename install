@@ -129,6 +129,7 @@ mkdir -p "$HOME/.cache" "$HOME/.config" "$HOME/.local/share"
 symlink "$HOME/.hushlogin" "$script_dir/hushlogin"
 
 cask alacritty
+xattr -d com.apple.quarantine /Applications/Alacritty.app # Allow running unsigned binary
 cask font-inconsolata-go-nerd-font
 symlink "$HOME/.config/alacritty/alacritty.toml" "$script_dir/alacritty.toml"
 
