@@ -7,6 +7,9 @@
 # Halt on first failed command
 set -e
 
+# Map Caps Lock to Left-Ctrl
+hidutil property --set '{"UserKeyMapping":[{"HIDKeyboardModifierMappingSrc":0x700000039,"HIDKeyboardModifierMappingDst":0x7000000E0}]}'
+
 # Install Homebrew (which takes care of Xcode CLI tools, including git)
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
