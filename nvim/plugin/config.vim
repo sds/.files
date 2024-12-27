@@ -1,7 +1,7 @@
 " All my personal tweaks
 
 " Fuzzy-finder shortcuts
-nnoremap <Space> :Telescope find_files<CR>
+nnoremap <Space> :lua require"telescope.builtin".find_files({ hidden = true })<CR>
 nnoremap <Leader>t :Telescope tags<CR>
 
 nnoremap <Leader>i <Cmd>lua vim.lsp.buf.code_action()<CR>
