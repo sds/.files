@@ -9,8 +9,8 @@ While that's nice, it's not the main reason.
 The goal with this was simplification:
 - Removed the [Dot framework](https://github.com/sds/dot) for configuration management since it was overengineered relative to what I personally needed.
 - Fish is much easier to configure than zsh, and has an excellent suite of autocompletions already provided.
-- Switching from [Vim](https://www.vim.org/) to [Neovim](https://neovim.io/) was on my list for a while, as most activity is happening on Neovim now.
-- Switch from [iTerm2](https://iterm2.com/) to [Alacritty](https://alacritty.org/), which has much fewer knobs to tweak (though I am excited for [Ghostty 1.0](https://mitchellh.com/writing/ghostty-is-coming) to be released).
+- Migrating from [Vim](https://www.vim.org/) to [Neovim](https://neovim.io/) was on my list for a while, as most activity is happening on Neovim now.
+- Migrating from [iTerm2](https://iterm2.com/) to [Ghostty](https://ghostty.org/), which has fewer knobs to tweak and is seeing much more active development.
 
 ## Installation
 

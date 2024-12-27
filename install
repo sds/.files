@@ -221,6 +221,9 @@ cask google-chrome
 cask istat-menus
 cask standard-notes
 
+cask ghostty
+symlink "$HOME/.config/ghostty/config" "$script_dir/ghostty"
+
 # Install our fish configuration last since it references plugins we installed above
 symlink "$HOME/.config/fish/config.fish" "$script_dir/config.fish"
 symlink "$HOME/.config/fish/local.fish" "$script_dir/local.fish"
