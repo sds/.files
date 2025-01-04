@@ -8,12 +8,18 @@ nnoremap <Leader>i <Cmd>lua vim.lsp.buf.code_action()<CR>
 
 set scrolloff=999 "Center the cursor vertically by default"
 
+set number " Show line numbers
+
 set formatoptions+=j  " Remove comment marker when joining lines
 set formatoptions+=o  " Continue comment marker in new lines
 
 set softtabstop=2     " Tabs are this many spaces
 set shiftwidth=2      " Indentation amount for < and > commands
 set smarttab          " Add spaces according to shiftwidth, <BS> kills sw spaces
+set expandtab         " Convert tabs to spaces
+
+set autoindent " Automatically indent new lines
+set smartindent " Autoindent at the beginning of code blocks
 
 set splitright " Focus new window after vertical splitting
 set splitbelow " Focus new window after horizontal splitting
@@ -23,6 +29,8 @@ set backspace=eol,indent,start
 
 " Switch buffers without saving
 set hidden
+
+set colorcolumn=+1 " Show textwidth limit
 
 set nobackup    " Don't create backup files
 set writebackup " Only backup file while editing
@@ -55,6 +63,11 @@ autocmd CursorMoved,CursorMovedI,InsertEnter,InsertLeave * checktime
 set wildmenu       " Tab-completion menu for command mode
 set wildignore+=*.o,*.pyc,*/tmp/*,*.swp,*.zip,.git
 set wildmode=list:longest,full
+
+set incsearch  " Start searching from current cursor postion
+set hlsearch   " Highlight search results
+set ignorecase " Make searching case insensitive
+set smartcase  " ...unless query has capital letters
 
 " Quick window splitting
 nnoremap <C-_> <C-W>s
