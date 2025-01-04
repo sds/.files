@@ -28,6 +28,8 @@ fish_add_path /opt/homebrew/opt/curl/bin # Not installed in default brew bin dir
 fish_add_path /opt/homebrew/opt/coreutils/libexec/gnubin # Use GNU core utils (`ls` etc) instead of macOS ones
 fish_add_path "$HOME/.files/git-helpers"
 
+fish_add_path "$HOME/.asdf/shims" # Ensure this gets preference
+
 ###############################################################################
 
 set fish_greeting
