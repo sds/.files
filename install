@@ -147,6 +147,7 @@ fish_plugin patrickf1/fzf.fish
 formula ripgrep
 
 formula git
+formula git-lfs
 formula diff-so-fancy
 symlink "$HOME/.config/git/config" "$script_dir/gitconfig"
 symlink "$HOME/.config/git/ignore" "$script_dir/gitignore"
