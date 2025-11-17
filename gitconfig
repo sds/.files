@@ -12,7 +12,7 @@
   s        = sync
   hash     = !sh -c 'git rev-parse ${1-HEAD}' -
   hr       = reset --hard
-  lg       = log --oneline --graph --decorate
+  lg       = log --graph --decorate --pretty=format:'%C(yellow)%h%Creset %s %Cgreen(%ad)%Creset' --date=iso
   p        = add --patch
   pl       = pull
   pof      = push origin -f
