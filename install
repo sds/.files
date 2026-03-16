@@ -128,10 +128,7 @@ mkdir -p "$HOME/.cache" "$HOME/.config" "$HOME/.local/share"
 
 symlink "$HOME/.hushlogin" "$script_dir/hushlogin"
 
-cask alacritty
-xattr -d com.apple.quarantine /Applications/Alacritty.app # Allow running unsigned binary
 cask font-inconsolata-go-nerd-font
-symlink "$HOME/.config/alacritty/alacritty.toml" "$script_dir/alacritty.toml"
 
 formula asdf
 fish_plugin dteoh/fish-homebrew-asdf # asdf integration
@@ -154,6 +151,7 @@ symlink "$HOME/.config/git/ignore" "$script_dir/gitignore"
 
 formula gpg
 formula pinentry
+formula pinentry-mac
 formula openssl
 formula openssh
 symlink "$HOME/.gnupg/gpg-agent.conf" "$script_dir/gpg-agent.conf"
