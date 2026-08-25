@@ -161,44 +161,53 @@ chmod 700 ~/.gnupg # Fix permissions and output only if there was a change
 if not pgrep gpg-agent >/dev/null
   echo "🏗️ Starting GPG agent..."
   gpgconf --launch gpg-agent
-  set -x SSH_AUTH_SOCK "$(gpgconf --list-dirs agent-ssh-socket)"
 end
 
-# If GPG isn't configured, this is a new machine.
-if ! gpg --list-keys | grep ultimate >/dev/null 2>&1
-  echo "🏗️ No PGP/SSH key. Creating one..."
-  gpg --full-generate-key
-  set primary_key (gpg --list-secret-keys --with-subkey-fingerprints | sed -n '/^[[:space:]]*[0-9A-Fa-f]\{40\}$/ {s/^[[:space:]]*//;p;q;}')
+set signing_key (git config --global --includes --get user.signingkey 2>/dev/null)
+if test -n "$signing_key"
+  echo "✅ Git signing key already configured at $signing_key."
+else
+  set ctk_hash (/usr/sbin/sc_auth list-ctk-identities -t sha1 -e hex 2>/dev/null | awk '$1 == "p-256-ne" && $NF == "YES" { print $2; exit }')
+  if test -z "$ctk_hash"
+    echo "🏗️ No Secure Enclave identity found. Creating one without Touch ID..."
+    /usr/sbin/sc_auth create-ctk-identity -l secure-enclave-ssh -k p-256-ne -t none; or exit 1
+    set ctk_hash (/usr/sbin/sc_auth list-ctk-identities -t sha1 -e hex 2>/dev/null | awk '$1 == "p-256-ne" && $NF == "YES" { print $2; exit }')
+  else
+    echo "✅ Reusing existing Secure Enclave identity $ctk_hash."
+  end
+  test -n "$ctk_hash"; or exit 1
 
-  # Create SSH key
-  gpg --quick-add-key $primary_key ed25519 auth
+  set key_dir "$HOME/.ssh/secure-enclave"
+  set key_stub "$key_dir/id_ecdsa_sk_secure-enclave-ssh"
+  mkdir -p "$key_dir"
+  chmod 700 "$key_dir"
 
-  # Configure GPG agent to use this SSH key for auth
-  gpg --list-secret-keys --with-keygrip $primary_key | sed -n '/\[A\]/,/Keygrip/p' | awk '/Keygrip/ {print $3}' > ~/.gnupg/sshcontrol
+  if not test -f "$key_stub" -a -f "$key_stub.pub"
+    echo "🏗️ Exporting the Secure Enclave OpenSSH key stub..."
+    pushd "$key_dir" >/dev/null
+    /usr/bin/yes y | env KEYCHAIN_CERTIFICATES="$ctk_hash" SSH_ASKPASS=/usr/bin/true SSH_ASKPASS_REQUIRE=force DISPLAY=ctk-noninteractive \
+      /usr/bin/ssh-keygen -K -w /usr/lib/ssh-keychain.dylib -N ""; or exit 1
+    /bin/mv id_ecdsa_sk_rk "$key_stub"; or exit 1
+    /bin/mv id_ecdsa_sk_rk.pub "$key_stub.pub"; or exit 1
+    popd >/dev/null
+  end
 
-  # Create commit signing key
-  gpg --quick-add-key $primary_key ed25519 sign
+  chmod 600 "$key_stub"
+  chmod 644 "$key_stub.pub"
+  /usr/bin/ssh-add -S /usr/lib/ssh-keychain.dylib "$key_stub"; or exit 1
 
-  # Configure Git to use signing key
-  set signing_key (gpg --list-keys --with-subkey-fingerprints $primary_key | sed -n '/\[S\]/,+1p' | awk '/^[[:space:]]+[0-9A-F]{40}/ {print $1}')
-  set local_git_config "\
-[user]
-  name = Shane da Silva
-  email = shane@dasilva.io
-  signingkey = $signing_key
-[commit]
-  gpgsign = true
-[tag]
-  gpgsign = true
-  "
+  set local_git_config "$HOME/.config/git/config.local"
+  git config --file "$local_git_config" user.name "Shane da Silva"
+  git config --file "$local_git_config" user.email "shane@dasilva.io"
+  git config --file "$local_git_config" user.signingkey "$key_stub.pub"
+  git config --file "$local_git_config" commit.gpgsign true
+  git config --file "$local_git_config" tag.gpgsign true
+  git config --file "$local_git_config" gpg.format ssh
 
-  echo -e "$local_git_config" > "$HOME/.config/git/config.local"
-
-  echo "✅ PGP & SSH keys configured. Add them to your GitHub profile:"
-  ssh-add -L
+  echo "✅ Secure Enclave SSH authentication and Git signing configured."
+  cat "$key_stub.pub"
+  echo "👉 Add this key to GitHub once as an Authentication Key and again as a Signing Key:"
   echo "👉 https://github.com/settings/ssh/new"
-  gpg --export --armor $primary_key
-  echo "👉 https://github.com/settings/gpg/new"
 end
 
 formula htop

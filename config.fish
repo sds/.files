@@ -52,20 +52,9 @@ set -x EDITOR "nvim"
 
 set -x FZF_DEFAULT_COMMAND "fd --no-ignore --hidden --exclude node_modules"
 
-if which gpgconf >/dev/null 2>&1
-  if not pgrep gpg-agent >/dev/null
-    gpgconf --launch gpg-agent
-  end
-
-  set -x SSH_AUTH_SOCK "$(gpgconf --list-dirs agent-ssh-socket)"
-
-  # Ensure pinentry program displays to the correct terminal
-  set -x GPG_TTY "$(tty)"
-  set -x GNUPGHOME "$HOME/.gnupg"
-  gpg-connect-agent updatestartuptty /bye >/dev/null
-else
-  echo "Skipping GPG setup since it is not yet installed."
-end
+# Save us from having to specify the -S /usr/lib/ssh-keychain.dylib every time
+# we ssh-add a secure enclave key
+set -x SSH_SK_PROVIDER /usr/lib/ssh-keychain.dylib
 
 function tmux -d "Start tmux session or connect to an existing session based on the current working directory"
   if test $(count "$argv") -le 1
